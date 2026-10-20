@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#050914">
+<title>JASON VPN PRO</title>
+<style>
+:root{
+  --bg:#050914;--panel:#0b1425;--panel2:#101d32;--cyan:#00d4ff;--blue:#0077ff;--gold:#d8aa45;--text:#f4f8ff;--muted:#8c9bb4;--border:rgba(0,212,255,.17);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:radial-gradient(ellipse at top,rgba(0,119,255,.15),transparent 48%),var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif;min-height:100vh;}
+button,select{font:inherit}button{cursor:pointer}
+.app{width:100%;max-width:480px;min-height:100vh;margin:auto;padding:20px 18px 35px;}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;}
+.brand{display:flex;align-items:center;gap:11px}
+.logo{width:49px;height:49px;display:grid;place-items:center;border-radius:15px;background:linear-gradient(145deg,#122b4a,#080e1d);border:1px solid rgba(0,212,255,.4);box-shadow:0 0 24px rgba(0,212,255,.12);}
+.logo svg{width:30px;height:30px}
+.brand h1{font-size:16px;letter-spacing:1px}.brand h1 span{color:var(--cyan)}
+.brand small{display:block;color:var(--muted);font-size:10px;margin-top:5px;letter-spacing:1.4px;}
+.status-badge{display:flex;align-items:center;gap:7px;font-size:10px;color:#c3d1e4;border:1px solid var(--border);background:#0b1425;padding:9px 10px;border-radius:20px;}
+.dot{width:7px;height:7px;border-radius:50%;background:#68768b}.dot.active{background:#24df91;box-shadow:0 0 10px #24df91}
+.hero{text-align:center;margin-top:16px}.eyebrow{font-size:11px;letter-spacing:3px;color:var(--cyan);font-weight:bold;}
+.hero h2{font-size:29px;line-height:1.25;margin:13px 0 9px;}.hero h2 span{color:var(--cyan)}.hero p{font-size:13px;color:var(--muted);line-height:1.7;max-width:320px;margin:auto;}
+.vpn-card{margin-top:28px;padding:24px 18px 21px;border-radius:26px;background:linear-gradient(155deg,rgba(17,34,58,.96),rgba(8,16,31,.98));border:1px solid var(--border);box-shadow:0 18px 55px rgba(0,0,0,.25);text-align:center;}
+.ring{width:174px;height:174px;margin:0 auto 20px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(0,212,255,.25);background:radial-gradient(circle,rgba(0,119,255,.16),rgba(0,212,255,.025) 68%);position:relative;}
+.ring:before,.ring:after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(0,212,255,.15);}.ring:before{inset:11px}.ring:after{inset:23px}
+.shield{width:83px;height:95px;display:grid;place-items:center;position:relative;z-index:1;filter:drop-shadow(0 0 17px rgba(0,212,255,.35));}.shield svg{width:78px;height:90px}
+.ring.connecting{animation:pulse 1.5s infinite}.ring.connected{border-color:rgba(36,223,145,.6);box-shadow:0 0 28px rgba(36,223,145,.1);}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+.connection-title{font-size:20px;font-weight:bold}.connection-desc{color:var(--muted);font-size:12px;margin:8px 0 20px;line-height:1.6;}
+.connect-btn{width:100%;height:54px;border:0;border-radius:15px;background:linear-gradient(100deg,var(--blue),var(--cyan));color:#03101b;font-size:15px;font-weight:800;letter-spacing:1px;box-shadow:0 7px 24px rgba(0,119,255,.2);transition:transform .2s,opacity .2s;}
+.connect-btn:active{transform:scale(.98)}
+.note{font-size:10px;color:var(--muted);margin-top:13px;line-height:1.6;}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin:27px 2px 13px;}.section-head h3{font-size:15px}.section-head span{font-size:11px;color:var(--muted)}
+.server-card{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--border);border-radius:17px;padding:15px;}
+.server-icon{width:45px;height:45px;border-radius:13px;display:grid;place-items:center;background:rgba(0,119,255,.12);color:var(--cyan);font-size:22px;}
+.server-info{flex:1;min-width:0}.server-info strong{font-size:13px;display:block}.server-info small{display:block;font-size:11px;color:var(--muted);margin-top:5px;}
+.server-card select{max-width:145px;width:145px;min-width:0;background:#101d32;color:white;border:1px solid var(--border);border-radius:10px;padding:10px 7px;outline:none;font-size:11px;}
+.features{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px;}
+.feature{background:var(--panel);border:1px solid rgba(255,255,255,.055);border-radius:17px;padding:16px 13px;}.feature-icon{font-size:21px;margin-bottom:12px}.feature strong{display:block;font-size:12px;margin-bottom:7px}.feature p{font-size:11px;line-height:1.6;color:var(--muted)}
+.footer{text-align:center;margin-top:30px;padding-top:19px;border-top:1px solid rgba(255,255,255,.06);}.footer strong{color:var(--gold);font-size:12px;letter-spacing:1px}.footer p{font-size:10px;color:var(--muted);margin-top:8px;line-height:1.7}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);width:max-content;max-width:90%;padding:13px 17px;border-radius:12px;background:#17263b;border:1px solid var(--border);color:white;font-size:12px;display:none;z-index:10;text-align:center;}.toast.show{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="brand">
+      <div class="logo"><svg viewBox="0 0 48 48" fill="none"><path d="M24 4 41 11V23C41 34 33 41 24 45 15 41 7 34 7 23V11L24 4Z" stroke="#00d4ff" stroke-width="2.5"/><path d="m16 24 5 5 11-12" stroke="#d8aa45" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div><h1>JASON <span>VPN PRO</span></h1><small>SECURE YOUR DIGITAL WORLD</small></div>
+    </div>
+    <div class="status-badge"><span class="dot" id="statusDot"></span><span id="headerStatus">DÉCONNECTÉ</span></div>
+  </header>
+  <section class="hero"><div class="eyebrow">PROTECTION NUMÉRIQUE</div><h2>Votre connexion.<br><span>Votre confidentialité.</span></h2><p>Choisissez un pays et connectez-vous instantanément.</p></section>
+  <section class="vpn-card">
+    <div class="ring" id="vpnRing"><div class="shield"><svg viewBox="0 0 90 105" fill="none"><path d="M45 5 79 19V45C79 67 65 86 45 98 25 86 11 67 11 45V19L45 5Z" fill="#0c2643" stroke="#00d4ff" stroke-width="3"/><path d="M45 15 69 25V45C69 61 60 75 45 85 30 75 21 61 21 45V25L45 15Z" stroke="#0077ff" stroke-width="1.5"/><path d="m31 49 9 9 19-21" stroke="#d8aa45" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+    <div class="connection-title" id="connectionTitle">Prêt à démarrer</div>
+    <p class="connection-desc" id="connectionDesc">Choisissez un serveur ci-dessous.</p>
+    <button class="connect-btn" id="connectBtn">CONNECTER</button>
+    <p class="note" id="connectionNote">Le fichier .conf sera enregistré dans Téléchargements</p>
+  </section>
+  <div class="section-head"><h3>Emplacement du serveur</h3><span>5 emplacements</span></div>
+  <section class="server-card">
+    <div class="server-icon">◎</div>
+    <div class="server-info"><strong id="serverName">Canada 🇨🇦</strong><small id="serverDescription">CA-FREE#5 · WireGuard</small></div>
+    <select id="serverSelect"><option value="ca">🇨🇦 Canada</option><option value="us">🇺🇸 États-Unis</option><option value="jp">🇯🇵 Japon</option><option value="ch">🇨🇭 Suisse</option><option value="mx">🇲🇽 Mexique</option></select>
+  </section>
+  <div class="section-head"><h3>Fonctionnalités</h3><span>JASON VPN PRO</span></div>
+  <section class="features">
+    <article class="feature"><div class="feature-icon">🛡️</div><strong>Tunnel chiffré</strong><p>Chiffrement WireGuard moderne</p></article>
+    <article class="feature"><div class="feature-icon">🔐</div><strong>Confidentialité</strong><p>IP masquée et trafic protégé</p></article>
+    <article class="feature"><div class="feature-icon">🌍</div><strong>5 emplacements</strong><p>Canada, USA, Japon, Suisse, Mexique</p></article>
+    <article class="feature"><div class="feature-icon">📱</div><strong>Android</strong><p>Fonctionne avec WireGuard</p></article>
+  </section>
+  <footer class="footer"><strong>JASON VPN PRO 🇨🇩</strong><p>Créé par Jason Aloma — Développeur congolais.<br>Kinshasa, RDC.</p><p>Version 2.0 · Final</p></footer>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  const servers={
+    ca:{name:"Canada 🇨🇦",id:"CA-FREE#5",endpoint:"149.88.97.122:51820",pub:"mS8GfqvUvazXvSYg7VHV7s8eEyU0yyGjJwYgdjHq23A=",priv:"GASGaC1ulBmnyXFSUtEc2yzL7R3PlSpdaCQrJeWY0WI="},
+    us:{name:"États-Unis 🇺🇸",id:"US-FREE#44",endpoint:"37.19.221.196:51820",pub:"4wqoqnWaoR8FLWkihmN4DVma/8lFn1fXQMRVs/4TD0A=",priv:"CJC+4mHotZ6hy2qlqYavbyOhnU9cx9Btczj7Fka0dHc="},
+    jp:{name:"Japon 🇯🇵",id:"JP-FREE#17",endpoint:"193.148.16.2:51820",pub:"5fFhuzIQPu8C4tySJuCJYg/13g75APFtMnqn3oeCpxk=",priv:"oLNIduV7OEhKQUmKJhE5FF6Ts9cgDXotNXZEA3plmk4="},
+    ch:{name:"Suisse 🇨🇭",id:"CH-FREE#3",endpoint:"138.199.6.178:51820",pub:"YpOUROUnumcF/snGX8zka0nThnvHesceJAYUSbZL1XQ=",priv:"aMxY38Nc8ZmflM0OoSdr95hZU0dAS+kOcrmv2tLniH8="},
+    mx:{name:"Mexique 🇲🇽",id:"MX-FREE#3",endpoint:"149.102.224.33:51820",pub:"rNyiLhJsBGoHd0A6Yrzt6c5DHuD3urE5+ZN3DZITfD8=",priv:"UDgEIG6fyJRQ8CYdnl0yS7AsxsiNuBjdyT7tBE/9s3w="}
+  };
+  const $=id=>document.getElementById(id);
+  const connectBtn=$("connectBtn"),connectionTitle=$("connectionTitle"),connectionDesc=$("connectionDesc"),connectionNote=$("connectionNote"),headerStatus=$("headerStatus"),statusDot=$("statusDot"),vpnRing=$("vpnRing"),serverSelect=$("serverSelect"),serverName=$("serverName"),serverDescription=$("serverDescription"),toast=$("toast");
+  let isConnected=false;
+  function notify(m){toast.textContent=m;toast.classList.add("show");clearTimeout(notify.t);notify.t=setTimeout(()=>toast.classList.remove("show"),4000);}
+  function updateServer(){
+    if(isConnected) return;
+    const s=servers[serverSelect.value];
+    serverName.textContent=s.name; serverDescription.textContent=s.id+" · WireGuard";
+    connectionTitle.textContent="Serveur sélectionné"; connectionDesc.textContent=s.name+" - "+s.endpoint;
+    connectionNote.textContent="Prêt à connecter"; headerStatus.textContent="DÉCONNECTÉ"; statusDot.classList.remove("active"); vpnRing.classList.remove("connecting","connected");
+    connectBtn.textContent="CONNECTER "+s.id; 
+  }
+  serverSelect.addEventListener("change",updateServer);
+  connectBtn.addEventListener("click",()=>{
+    const s=servers[serverSelect.value];
+    if(!isConnected){
+      // CONNEXION
+      vpnRing.classList.add("connecting");
+      connectionTitle.textContent="Connexion..."; connectionDesc.textContent="Génération du tunnel "+s.id; headerStatus.textContent="CONNEXION..."; connectBtn.disabled=true;
+      setTimeout(()=>{
+        const conf=`[Interface]
+PrivateKey = ${s.priv}
+Address = 10.2.0.2/32
+DNS = 10.2.0.1
+[Peer]
+PublicKey = ${s.pub}
+Endpoint = ${s.endpoint}
+AllowedIPs = 0.0.0.0/0, ::/0
+PersistentKeepalive = 25
+`;
+        const blob=new Blob([conf],{type:"text/plain"}); const url=URL.createObjectURL(blob);
+        const a=document.createElement("a"); a.href=url; a.download=`JASON-${s.id}.conf`; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(()=>URL.revokeObjectURL(url),1000);
+        
+        vpnRing.classList.remove("connecting"); vpnRing.classList.add("connected");
+        connectionTitle.textContent="Connecté !"; connectionDesc.textContent="Tunnel actif: "+s.name+" - "+s.endpoint;
+        connectionNote.textContent="IP: 10.2.0.2 - DNS: 10.2.0.1 - Fichier: JASON-"+s.id+".conf enregistré"; headerStatus.textContent="CONNECTÉ"; statusDot.classList.add("active");
+        connectBtn.textContent="DÉCONNECTER"; connectBtn.disabled=false; isConnected=true;
+        notify("Fichier enregistré: JASON-"+s.id+".conf - Ouvre WireGuard pour activer");
+      },1500);
+    } else {
+      // DECONNEXION
+      vpnRing.classList.remove("connected"); connectionTitle.textContent="Déconnecté"; connectionDesc.textContent="Tunnel fermé"; connectionNote.textContent="Prêt à connecter"; headerStatus.textContent="DÉCONNECTÉ"; statusDot.classList.remove("active"); connectBtn.textContent="CONNECTER "+s.id; isConnected=false; notify("Déconnecté");
+    }
+  });
+  updateServer();
+})();
+</script>
+</body>
+</html>
