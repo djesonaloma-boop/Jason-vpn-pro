@@ -6,8 +6,8 @@ export default function handler(req, res) {
     ch:{id:"CH-FREE#3",endpoint:"138.199.6.178:51820",pub:"YpOUROUnumcF/snGX8zka0nThnvHesceJAYUSbZL1XQ=",priv:"aMxY38Nc8ZmflM0OoSdr95hZU0dAS+kOcrmv2tLniH8="},
     mx:{id:"MX-FREE#3",endpoint:"149.102.224.33:51820",pub:"rNyiLhJsBGoHd0A6Yrzt6c5DHuD3urE5+ZN3DZITfD8=",priv:"UDgEIG6fyJRQ8CYdnl0yS7AsxsiNuBjdyT7tBE/9s3w="}
   };
-  const country = (req.query.country || 'ca').toLowerCase();
-  const s = servers[country];
+  const c = (req.query.country || 'ca').toLowerCase();
+  const s = servers[c];
   if(!s) return res.status(404).json({error:"Serveur inconnu"});
   const conf=`[Interface]
 PrivateKey = ${s.priv}
@@ -20,7 +20,6 @@ AllowedIPs = 0.0.0.0/0, ::/0
 PersistentKeepalive = 25
 `;
   res.setHeader('Content-Type','text/plain');
-  res.setHeader('Content-Disposition', `attachment; filename="JASON-${s.id}.conf"`);
   res.setHeader('Access-Control-Allow-Origin','*');
   return res.status(200).send(conf);
 }
