@@ -6,9 +6,7 @@
 <meta name="theme-color" content="#050914">
 <title>JASON VPN PRO</title>
 <style>
-:root{
-  --bg:#050914;--panel:#0b1425;--panel2:#101d32;--cyan:#00d4ff;--blue:#0077ff;--gold:#d8aa45;--text:#f4f8ff;--muted:#8c9bb4;--border:rgba(0,212,255,.17);
-}
+:root{--bg:#050914;--panel:#0b1425;--panel2:#101d32;--cyan:#00d4ff;--blue:#0077ff;--gold:#d8aa45;--text:#f4f8ff;--muted:#8c9bb4;--border:rgba(0,212,255,.17);}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:radial-gradient(ellipse at top,rgba(0,119,255,.15),transparent 48%),var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif;min-height:100vh;}
 button,select{font:inherit}button{cursor:pointer}
@@ -81,11 +79,11 @@ button,select{font:inherit}button{cursor:pointer}
 <script>
 (function(){
   const servers={
-    ca:{name:"Canada 🇨🇦",id:"CA-FREE#5",endpoint:"149.88.97.122:51820",pub:"mS8GfqvUvazXvSYg7VHV7s8eEyU0yyGjJwYgdjHq23A=",priv:"GASGaC1ulBmnyXFSUtEc2yzL7R3PlSpdaCQrJeWY0WI="},
-    us:{name:"États-Unis 🇺🇸",id:"US-FREE#44",endpoint:"37.19.221.196:51820",pub:"4wqoqnWaoR8FLWkihmN4DVma/8lFn1fXQMRVs/4TD0A=",priv:"CJC+4mHotZ6hy2qlqYavbyOhnU9cx9Btczj7Fka0dHc="},
-    jp:{name:"Japon 🇯🇵",id:"JP-FREE#17",endpoint:"193.148.16.2:51820",pub:"5fFhuzIQPu8C4tySJuCJYg/13g75APFtMnqn3oeCpxk=",priv:"oLNIduV7OEhKQUmKJhE5FF6Ts9cgDXotNXZEA3plmk4="},
-    ch:{name:"Suisse 🇨🇭",id:"CH-FREE#3",endpoint:"138.199.6.178:51820",pub:"YpOUROUnumcF/snGX8zka0nThnvHesceJAYUSbZL1XQ=",priv:"aMxY38Nc8ZmflM0OoSdr95hZU0dAS+kOcrmv2tLniH8="},
-    mx:{name:"Mexique 🇲🇽",id:"MX-FREE#3",endpoint:"149.102.224.33:51820",pub:"rNyiLhJsBGoHd0A6Yrzt6c5DHuD3urE5+ZN3DZITfD8=",priv:"UDgEIG6fyJRQ8CYdnl0yS7AsxsiNuBjdyT7tBE/9s3w="}
+    ca:{name:"Canada 🇨🇦",id:"CA-FREE#5",endpoint:"149.88.97.122:51820"},
+    us:{name:"États-Unis 🇺🇸",id:"US-FREE#44",endpoint:"37.19.221.196:51820"},
+    jp:{name:"Japon 🇯🇵",id:"JP-FREE#17",endpoint:"193.148.16.2:51820"},
+    ch:{name:"Suisse 🇨🇭",id:"CH-FREE#3",endpoint:"138.199.6.178:51820"},
+    mx:{name:"Mexique 🇲🇽",id:"MX-FREE#3",endpoint:"149.102.224.33:51820"}
   };
   const $=id=>document.getElementById(id);
   const connectBtn=$("connectBtn"),connectionTitle=$("connectionTitle"),connectionDesc=$("connectionDesc"),connectionNote=$("connectionNote"),headerStatus=$("headerStatus"),statusDot=$("statusDot"),vpnRing=$("vpnRing"),serverSelect=$("serverSelect"),serverName=$("serverName"),serverDescription=$("serverDescription"),toast=$("toast");
@@ -100,34 +98,28 @@ button,select{font:inherit}button{cursor:pointer}
     connectBtn.textContent="CONNECTER "+s.id; 
   }
   serverSelect.addEventListener("change",updateServer);
-  connectBtn.addEventListener("click",()=>{
+  connectBtn.addEventListener("click",async ()=>{
     const s=servers[serverSelect.value];
     if(!isConnected){
-      // CONNEXION
       vpnRing.classList.add("connecting");
       connectionTitle.textContent="Connexion..."; connectionDesc.textContent="Génération du tunnel "+s.id; headerStatus.textContent="CONNEXION..."; connectBtn.disabled=true;
-      setTimeout(()=>{
-        const conf=`[Interface]
-PrivateKey = ${s.priv}
-Address = 10.2.0.2/32
-DNS = 10.2.0.1
-[Peer]
-PublicKey = ${s.pub}
-Endpoint = ${s.endpoint}
-AllowedIPs = 0.0.0.0/0, ::/0
-PersistentKeepalive = 25
-`;
-        const blob=new Blob([conf],{type:"text/plain"}); const url=URL.createObjectURL(blob);
+      try{
+        const r = await fetch(`/api/config?country=${serverSelect.value}`);
+        if(!r.ok) throw new Error();
+        const confText = await r.text();
+        const blob=new Blob([confText],{type:"text/plain"}); const url=URL.createObjectURL(blob);
         const a=document.createElement("a"); a.href=url; a.download=`JASON-${s.id}.conf`; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(()=>URL.revokeObjectURL(url),1000);
-        
         vpnRing.classList.remove("connecting"); vpnRing.classList.add("connected");
         connectionTitle.textContent="Connecté !"; connectionDesc.textContent="Tunnel actif: "+s.name+" - "+s.endpoint;
         connectionNote.textContent="IP: 10.2.0.2 - DNS: 10.2.0.1 - Fichier: JASON-"+s.id+".conf enregistré"; headerStatus.textContent="CONNECTÉ"; statusDot.classList.add("active");
         connectBtn.textContent="DÉCONNECTER"; connectBtn.disabled=false; isConnected=true;
         notify("Fichier enregistré: JASON-"+s.id+".conf - Ouvre WireGuard pour activer");
-      },1500);
+      }catch(e){
+        vpnRing.classList.remove("connecting"); connectBtn.disabled=false;
+        notify("Erreur backend - vérifie que api/config.js est déployé");
+        connectionTitle.textContent="Erreur backend"; connectionDesc.textContent="Le serveur n'a pas répondu";
+      }
     } else {
-      // DECONNEXION
       vpnRing.classList.remove("connected"); connectionTitle.textContent="Déconnecté"; connectionDesc.textContent="Tunnel fermé"; connectionNote.textContent="Prêt à connecter"; headerStatus.textContent="DÉCONNECTÉ"; statusDot.classList.remove("active"); connectBtn.textContent="CONNECTER "+s.id; isConnected=false; notify("Déconnecté");
     }
   });
